@@ -1,18 +1,16 @@
 import { getData } from "@/data/getToken";
-import dynamic from "next/dynamic";
-import Script from "next/script";
+import ClientVideocall from "@/components/ClientVideocall";
 
-const Videocall = dynamic<{ slug: string; JWT: string }>(
-  () => import("../../../components/Videocall"),
-  { ssr: false },
-);
-
-export default async function Page({ params }: { params: { slug: string } }) {
-  const jwt = await getData(params.slug);
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const jwt = await getData(slug);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Videocall slug={params.slug} JWT={jwt} />
-      <Script src="/coi-serviceworker.js" strategy="beforeInteractive" />
+      <ClientVideocall slug={slug} JWT={jwt} />
     </main>
   );
 }
